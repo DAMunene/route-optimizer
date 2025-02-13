@@ -6,7 +6,7 @@ class Command(BaseCommand):
     help = 'Load fuel prices from CSV into the database'
 
     def handle(self, *args, **kwargs):
-        with open('fuel-prices-for-be-assessment.csv', 'r') as file:
+        with open('fuel_prices_with_coordinates.csv', 'r') as file:
             reader = csv.DictReader(file)
             for row in reader:
                 FuelPrice.objects.create(
@@ -16,6 +16,9 @@ class Command(BaseCommand):
                     city=row['City'],
                     state=row['State'],
                     rack_id=row['Rack ID'],
-                    retail_price=row['Retail Price']
+                    retail_price=row['Retail Price'],
+                    longitude=float(row['longitude']) if row['longitude'] else None,
+                    latitude=float(row['latitude']) if row['latitude'] else None
+
                 )
         self.stdout.write(self.style.SUCCESS('Fuel prices loaded successfully'))
